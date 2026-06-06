@@ -13,7 +13,7 @@ const TokenManager = {
       const artifacts = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_KEY);
       return artifacts;
     } catch (error) {
-      throw new InvariantError('Refresh token tidak valid');
+      throw new InvariantError('Refresh token tidak valid', error);
     }
   },
 };
