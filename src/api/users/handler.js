@@ -3,15 +3,17 @@ export default class UsersHandler {
     this._service = service;
     this._validator = validator;
 
-    // Binding 'this' agar konteksnya tidak hilang saat dipanggil oleh Express router
     this.postUserHandler = this.postUserHandler.bind(this);
   }
 
   async postUserHandler(req, res, next) {
     try {
-      this._validator.validateUserPayload(req.body);
+      const payload = req.body || {};
 
-      const { fullname, email, password } = req.body;
+      this._validator.validateUserPayload(payload);
+
+      const { fullname, email, password } = payload;
+      
       const userId = await this._service.addUser({ fullname, email, password });
 
       return res.status(201).json({
@@ -22,7 +24,6 @@ export default class UsersHandler {
         },
       });
     } catch (error) {
-      // Lempar error ke middleware errorHandler yang kita buat sebelumnya
       next(error); 
     }
   }

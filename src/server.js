@@ -1,25 +1,50 @@
 import 'dotenv/config';
-import process from 'process';
 import express from 'express';
 import errorHandler from './middlewares/errorHandler.js';
+import process from 'process';
+
+// 1. Import Services
 import UsersService from './services/postgres/UsersService.js';
+import AuthenticationsService from './services/postgres/AuthenticationsService.js';
+
+// 2. Import Token Manager
+import TokenManager from './tokenize/TokenManager.js';
+
+// 3. Import Validators
 import UsersValidator from './validator/users/index.js';
+import AuthenticationsValidator from './validator/authentications/index.js';
+
+// 4. Import API Plugin/Modul
 import createUsersApi from './api/users/index.js';
+import createAuthenticationsApi from './api/authentications/index.js';
 
 const app = express();
-const port = process.env.PORT;
-const host = process.env.HOST;
+const port = process.env.PORT || 3000;
+const host = process.env.HOST || 'localhost';
 
 app.use(express.json());
 
+// Inisialisasi Service
 const usersService = new UsersService();
+const authenticationsService = new AuthenticationsService();
 
+// Registrasi API Modul
 app.use('/users', createUsersApi(usersService, UsersValidator));
+app.use(
+  '/authentications',
+  createAuthenticationsApi(
+    authenticationsService,
+    usersService,
+    TokenManager,
+    AuthenticationsValidator
+  )
+);
 
 app.get('/', (req, res) => {
     res.send({ message: 'OpenJob RESTful API V1 is running with ES Modules!' });
 });
 
+// Middleware Error Handler selalu di urutan paling bawah
 app.use(errorHandler);
 
 app.listen(port, host, () => {
