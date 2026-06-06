@@ -2,6 +2,7 @@ import pool from './pool.js';
 import { nanoid } from 'nanoid';
 import bcrypt from 'bcrypt';
 import InvariantError from '../../exceptions/InvariantError.js';
+import AuthenticationError from '../../exceptions/AuthenticationError.js';
 
 export default class UsersService {
   async addUser({ fullname, email, password }) {
@@ -30,10 +31,33 @@ export default class UsersService {
       values: [email],
     };
 
+
     const result = await pool.query(query);
 
     if (result.rows.length > 0) {
       throw new InvariantError('Gagal menambahkan user. Email sudah digunakan.');
     }
+  }
+
+  async verifyUserCredential(email, password) {
+      const query = {
+      text: 'SELECT id, password FROM users WHERE email = $1',
+      values: [email],
+    };
+
+    const result = await pool.query(query);
+
+    if (!result.rows.length) {
+      throw new AuthenticationError('Kredensial yang Anda berikan salah');
+    }
+
+    const { id, password: hashedPassword } = result.rows[0];
+    const match = await bcrypt.compare(password, hashedPassword);
+
+    if (!match) {
+      throw new AuthenticationError('Kredensial yang Anda berikan salah');
+    }
+
+    return id;
   }
 }

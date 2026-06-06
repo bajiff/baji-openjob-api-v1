@@ -1,6 +1,6 @@
 import ClientError from '../exceptions/ClientError.js';
 
-const errorHandler = (err, req, res) => {
+const errorHandler = (err, req, res, next) => {
   if (err instanceof ClientError) {
     return res.status(err.statusCode).json({
       status: 'fail',
