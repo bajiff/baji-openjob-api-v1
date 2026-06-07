@@ -3,25 +3,41 @@ import express from 'express';
 import errorHandler from './middlewares/errorHandler.js';
 import process from 'process';
 
-// 1. Import Services
+// ? 1. Import Services
 import UsersService from './services/postgres/UsersService.js';
 import AuthenticationsService from './services/postgres/AuthenticationsService.js';
 
-// 2. Import Token Manager
+// ? 2. Import Token Manager
 import TokenManager from './tokenize/TokenManager.js';
 
-// 3. Import Validators
+// ?  3. Import Validators
 import UsersValidator from './validator/users/index.js';
 import AuthenticationsValidator from './validator/authentications/index.js';
 
-// 4. Import API Plugin/Modul
+// ?  4. Import API Profile
 import createUsersApi from './api/users/index.js';
 import createAuthenticationsApi from './api/authentications/index.js';
 import createProfileApi from './api/profile/index.js';
 
+// ? 5. Import API Companies
 import CompaniesService from './services/postgres/CompaniesService.js';
 import CompaniesValidator from './validator/companies/index.js';
 import createCompaniesApi from './api/companies/index.js';
+
+// ? 6. Import API Categories
+import CategoriesService from './services/postgres/CategoriesService.js';
+import CategoriesValidator from './validator/categories/index.js';
+import createCategoriesApi from './api/categories/index.js';
+
+// ? 7. Import API Jobs
+import JobsService from './services/postgres/JobsService.js';
+import JobsValidator from './validator/jobs/index.js';
+import createJobsApi from './api/jobs/index.js';
+
+// ? 8. Import API Applications
+import ApplicationsService from './services/postgres/ApplicationsService.js';
+import ApplicationsValidator from './validator/applications/index.js';
+import createApplicationsApi from './api/applications/index.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -33,6 +49,9 @@ app.use(express.json());
 const usersService = new UsersService();
 const authenticationsService = new AuthenticationsService();
 const companiesService = new CompaniesService();
+const categoriesService = new CategoriesService();
+const jobsService = new JobsService();
+const applicationsService = new ApplicationsService();
 
 // Registrasi API Modul
 app.use('/users', createUsersApi(usersService, UsersValidator));
@@ -48,6 +67,9 @@ app.use(
 
 app.use('/profile', createProfileApi(usersService));
 app.use('/companies', createCompaniesApi(companiesService, CompaniesValidator));
+app.use('/categories', createCategoriesApi(categoriesService, CategoriesValidator));
+app.use('/jobs', createJobsApi(jobsService, JobsValidator));
+app.use('/applications', createApplicationsApi(applicationsService, ApplicationsValidator));
 
 app.get('/', (req, res) => {
     res.send({ message: 'OpenJob RESTful API V1 is running with ES Modules!' });
