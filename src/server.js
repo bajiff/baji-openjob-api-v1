@@ -17,6 +17,7 @@ import AuthenticationsValidator from './validator/authentications/index.js';
 // 4. Import API Plugin/Modul
 import createUsersApi from './api/users/index.js';
 import createAuthenticationsApi from './api/authentications/index.js';
+import createProfileApi from './api/profile/index.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -39,6 +40,8 @@ app.use(
     AuthenticationsValidator
   )
 );
+
+app.use('/profile', createProfileApi(usersService));
 
 app.get('/', (req, res) => {
     res.send({ message: 'OpenJob RESTful API V1 is running with ES Modules!' });
