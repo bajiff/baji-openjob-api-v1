@@ -19,6 +19,10 @@ import createUsersApi from './api/users/index.js';
 import createAuthenticationsApi from './api/authentications/index.js';
 import createProfileApi from './api/profile/index.js';
 
+import CompaniesService from './services/postgres/CompaniesService.js';
+import CompaniesValidator from './validator/companies/index.js';
+import createCompaniesApi from './api/companies/index.js';
+
 const app = express();
 const port = process.env.PORT || 3000;
 const host = process.env.HOST || 'localhost';
@@ -28,6 +32,7 @@ app.use(express.json());
 // Inisialisasi Service
 const usersService = new UsersService();
 const authenticationsService = new AuthenticationsService();
+const companiesService = new CompaniesService();
 
 // Registrasi API Modul
 app.use('/users', createUsersApi(usersService, UsersValidator));
@@ -42,6 +47,7 @@ app.use(
 );
 
 app.use('/profile', createProfileApi(usersService));
+app.use('/companies', createCompaniesApi(companiesService, CompaniesValidator));
 
 app.get('/', (req, res) => {
     res.send({ message: 'OpenJob RESTful API V1 is running with ES Modules!' });
