@@ -63,7 +63,7 @@ export default class UsersService {
   
   async getUserById(userId) {
     const query = {
-      text: 'SELECT id, name, email FROM users WHERE id = $1',
+      text: 'SELECT id, fullname as name, email FROM users WHERE id = $1',
       values: [userId],
     };
 

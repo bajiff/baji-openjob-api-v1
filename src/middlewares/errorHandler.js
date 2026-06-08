@@ -5,7 +5,7 @@ const errorHandler = (err, req, res, next) => {
   // 1. Tangani error dari ClientError buatan kita (InvariantError, AuthenticationError)
   if (err instanceof ClientError) {
     return res.status(err.statusCode).json({
-      status: 'fail',
+      status: 'failed',
       message: err.message,
     });
   }
@@ -13,7 +13,7 @@ const errorHandler = (err, req, res, next) => {
   // 2. Tangani error cacat format JSON dari express.json()
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     return res.status(400).json({
-      status: 'fail',
+      status: 'failed',
       message: 'Format JSON tidak valid. Pastikan tidak ada sintaks yang salah atau koma berlebih.',
     });
   }

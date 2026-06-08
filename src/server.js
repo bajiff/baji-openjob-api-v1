@@ -55,6 +55,12 @@ const applicationsService = new ApplicationsService();
 
 // Registrasi API Modul
 app.use('/users', createUsersApi(usersService, UsersValidator));
+app.use((req,res) => {
+  res.status(404).json({
+    status: 'failed',
+    message: 'Halaman atau endpoint tidak ditemukan',
+  })
+})
 app.use(
   '/authentications',
   createAuthenticationsApi(

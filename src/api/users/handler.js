@@ -4,6 +4,7 @@ export default class UsersHandler {
     this._validator = validator;
 
     this.postUserHandler = this.postUserHandler.bind(this);
+    this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
   }
 
   async postUserHandler(req, res, next) {
@@ -20,11 +21,27 @@ export default class UsersHandler {
         status: 'success',
         message: 'User berhasil ditambahkan',
         data: {
-          userId,
+          id: userId,
         },
       });
     } catch (error) {
       next(error); 
+    }
+  }
+  
+  async getUserByIdHandler(req, res, next) {
+    try {
+      const { id } = req.params;
+      const user = await this._service.getUserById(id);
+
+      return res.json({
+        status: 'success',
+        data: {
+          user,
+        },
+      });
+    } catch (error) {
+      next(error);
     }
   }
 }

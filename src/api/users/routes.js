@@ -5,6 +5,7 @@ const routes = (handler) => {
   
   // Endpoint Public: POST /users -> Register new user
   router.post('/', handler.postUserHandler);
+  router.get('/:id', handler.getUserByIdHandler);
   
   return router;
 };
