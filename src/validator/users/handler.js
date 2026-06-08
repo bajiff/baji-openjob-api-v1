@@ -9,8 +9,8 @@ export default class UsersHandler {
     try {
       this._validator.validateUserPayload(req.body);
 
-      const { fullname, email, password } = req.body;
-      const userId = await this._service.addUser({ fullname, email, password });
+      const { name, email, password } = req.body;
+      const userId = await this._service.addUser({ name, email, password });
 
       return res.status(201).json({
         status: 'success',

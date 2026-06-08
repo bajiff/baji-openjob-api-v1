@@ -5,7 +5,7 @@ import InvariantError from '../../exceptions/InvariantError.js';
 import AuthenticationError from '../../exceptions/AuthenticationError.js';
 
 export default class UsersService {
-  async addUser({ fullname, email, password }) {
+  async addUser({ name, email, password }) {
     await this.verifyNewEmail(email);
 
     const id = `user-${nanoid(16)}`;
@@ -13,7 +13,7 @@ export default class UsersService {
 
     const query = {
       text: 'INSERT INTO users VALUES($1, $2, $3, $4) RETURNING id',
-      values: [id, fullname, email, hashedPassword],
+      values: [id, name, email, hashedPassword],
     };
 
     const result = await pool.query(query);
@@ -63,7 +63,7 @@ export default class UsersService {
   
   async getUserById(userId) {
     const query = {
-      text: 'SELECT id, fullname, email FROM users WHERE id = $1',
+      text: 'SELECT id, name, email FROM users WHERE id = $1',
       values: [userId],
     };
 
