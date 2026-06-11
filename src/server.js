@@ -55,12 +55,8 @@ const applicationsService = new ApplicationsService();
 
 // Registrasi API Modul
 app.use('/users', createUsersApi(usersService, UsersValidator));
-app.use((req,res) => {
-  res.status(404).json({
-    status: 'failed',
-    message: 'Halaman atau endpoint tidak ditemukan',
-  })
-})
+
+
 app.use(
   '/authentications',
   createAuthenticationsApi(
@@ -80,6 +76,13 @@ app.use('/applications', createApplicationsApi(applicationsService, Applications
 app.get('/', (req, res) => {
     res.send({ message: 'OpenJob RESTful API V1 is running with ES Modules!' });
 });
+
+app.use((req,res) => {
+  res.status(404).json({
+    status: 'failed',
+    message: 'Halaman atau endpoint tidak ditemukan',
+  })
+})
 
 // Middleware Error Handler selalu di urutan paling bawah
 app.use(errorHandler);

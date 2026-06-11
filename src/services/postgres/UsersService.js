@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import bcrypt from 'bcrypt';
 import InvariantError from '../../exceptions/InvariantError.js';
 import AuthenticationError from '../../exceptions/AuthenticationError.js';
+import NotFoundError from '../../exceptions/NotFoundError.js';
 
 export default class UsersService {
   async addUser({ name, email, password }) {
@@ -70,7 +71,7 @@ export default class UsersService {
     const result = await pool.query(query);
 
     if (!result.rows.length) {
-      throw new InvariantError('User tidak ditemukan');
+      throw new NotFoundError('User tidak ditemukan');
     }
 
     return result.rows[0];

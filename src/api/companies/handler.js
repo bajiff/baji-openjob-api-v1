@@ -15,14 +15,14 @@ export default class CompaniesHandler {
       const payload = req.body || {};
       this._validator.validateCompanyPayload(payload);
 
-      const { name, description } = payload;
-      const companyId = await this._service.addCompany({ name, description });
+      const { name, location, description, } = payload;
+      const companyId = await this._service.addCompany({ name, location, description});
 
       return res.status(201).json({
         status: 'success',
         message: 'Company berhasil ditambahkan',
         data: {
-          companyId,
+          id: companyId,
         },
       });
     } catch (error) {
@@ -52,7 +52,10 @@ export default class CompaniesHandler {
       return res.json({
         status: 'success',
         data: {
-          company,
+          id: company.id,
+          name: company.name,
+          description: company.description,
+          location: company.location,
         },
       });
     } catch (error) {

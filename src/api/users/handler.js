@@ -34,10 +34,13 @@ export default class UsersHandler {
       const { id } = req.params;
       const user = await this._service.getUserById(id);
 
-      return res.json({
+      return res.status(200).json({
         status: 'success',
         data: {
-          user,
+          id: user.id,
+          name: user.name || user.fullname,
+          fullname: user.fullname || user.name, 
+          email: user.email,
         },
       });
     } catch (error) {
