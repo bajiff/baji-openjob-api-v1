@@ -8,6 +8,8 @@ export default class JobsHandler {
     this.getJobByIdHandler = this.getJobByIdHandler.bind(this);
     this.putJobByIdHandler = this.putJobByIdHandler.bind(this);
     this.deleteJobByIdHandler = this.deleteJobByIdHandler.bind(this);
+    this.getJobsByCompanyIdHandler = this.getJobsByCompanyIdHandler.bind(this);
+
   }
 
   async postJobHandler(req, res, next) {
@@ -64,6 +66,24 @@ export default class JobsHandler {
         status: 'success',
         data: {
           job,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getJobsByCompanyIdHandler(req, res, next) {
+    try {
+      // Tangkap parameter sesuai nama di routes.js
+      const { companyId } = req.params; 
+      
+      const jobs = await this._service.getJobsByCompanyId(companyId);
+
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          jobs, // Kembalikan dalam bentuk array di dalam properti 'jobs'
         },
       });
     } catch (error) {

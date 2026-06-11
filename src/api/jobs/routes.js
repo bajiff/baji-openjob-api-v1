@@ -6,6 +6,7 @@ const routes = (handler) => {
   
   router.get('/', handler.getJobsHandler);
   router.get('/:id', handler.getJobByIdHandler);
+  router.get('/company/:companyId', handler.getJobsByCompanyIdHandler);
 
   router.post('/', authMiddleware, handler.postJobHandler);
   router.put('/:id', authMiddleware, handler.putJobByIdHandler);
