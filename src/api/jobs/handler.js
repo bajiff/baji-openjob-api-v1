@@ -9,6 +9,7 @@ export default class JobsHandler {
     this.putJobByIdHandler = this.putJobByIdHandler.bind(this);
     this.deleteJobByIdHandler = this.deleteJobByIdHandler.bind(this);
     this.getJobsByCompanyIdHandler = this.getJobsByCompanyIdHandler.bind(this);
+    this.getJobsByCategoryIdHandler = this.getJobsByCategoryIdHandler.bind(this);
 
   }
 
@@ -90,7 +91,22 @@ export default class JobsHandler {
       next(error);
     }
   }
+    async getJobsByCategoryIdHandler(req, res, next) {
+    try {
+      const { categoryId } = req.params;
+      
+      const jobs = await this._service.getJobsByCategoryId(categoryId);
 
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          jobs, 
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
   async putJobByIdHandler(req, res, next) {
     try {
       const payload = req.body || {};

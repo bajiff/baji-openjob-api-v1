@@ -77,6 +77,17 @@ export default class JobsService {
     return result.rows; 
   }
 
+  async getJobsByCategoryId(categoryId) {
+    const query = {
+      text: 'SELECT * FROM jobs WHERE category_id = $1',
+      values: [categoryId],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
+  }
+
   async editJobById(id, { title, description, companyId, categoryId }) {
     const query = {
       text: 'UPDATE jobs SET title = $1, description = $2, company_id = $3, category_id = $4 WHERE id = $5 RETURNING id',
