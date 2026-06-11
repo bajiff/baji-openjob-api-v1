@@ -12,17 +12,28 @@ export default class JobsHandler {
 
   async postJobHandler(req, res, next) {
     try {
-      const payload = req.body || {};
-      this._validator.validateJobPayload(payload);
+      this._validator.validateJobPayload(req.body);
 
-      const { title, description, companyId, categoryId } = payload;
-      const jobId = await this._service.addJob({ title, description, companyId, categoryId });
+      const { 
+        company_id, category_id, title, description, 
+        job_type, experience_level, location_type, 
+        location_city, salary_min, salary_max, 
+        is_salary_visible, status 
+      } = req.body;
+
+      // Lalu oper variabel tersebut ke service
+      const jobId = await this._service.addJob({
+        company_id, category_id, title, description, 
+        job_type, experience_level, location_type, 
+        location_city, salary_min, salary_max, 
+        is_salary_visible, status
+      });
 
       return res.status(201).json({
         status: 'success',
-        message: 'Lowongan pekerjaan berhasil ditambahkan',
+        message: 'Job berhasil ditambahkan',
         data: {
-          jobId,
+          id: jobId, 
         },
       });
     } catch (error) {

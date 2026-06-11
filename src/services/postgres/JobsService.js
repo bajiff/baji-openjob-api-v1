@@ -7,7 +7,6 @@ export default class JobsService {
   async addJob({ title, description, companyId, categoryId }) {
     const id = `job-${nanoid(16)}`;
     const query = {
-      // Sesuai dengan kolom DB: id, title, description, company_id, category_id
       text: 'INSERT INTO jobs VALUES($1, $2, $3, $4, $5) RETURNING id',
       values: [id, title, description, companyId, categoryId],
     };

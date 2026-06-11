@@ -22,7 +22,7 @@ export default class CategoriesHandler {
         status: 'success',
         message: 'Kategori berhasil ditambahkan',
         data: {
-          categoryId,
+          id:categoryId
         },
       });
     } catch (error) {
@@ -52,7 +52,7 @@ export default class CategoriesHandler {
       return res.json({
         status: 'success',
         data: {
-          category,
+          name: category.name,
         },
       });
     } catch (error) {
