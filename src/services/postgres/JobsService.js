@@ -4,23 +4,42 @@ import InvariantError from '../../exceptions/InvariantError.js';
 import NotFoundError from '../../exceptions/NotFoundError.js';
 
 export default class JobsService {
-  async addJob({ title, description, companyId, categoryId }) {
+  constructor() {
+    this._pool = pool;
+  }
+  async addJob({ 
+    company_id, category_id, title, description, 
+    job_type, experience_level, location_type, 
+    location_city, salary_min, salary_max, 
+    is_salary_visible, status 
+  }) {
     const id = `job-${nanoid(16)}`;
+
+    // 2. Pastikan kueri SQL menyebutkan ke-12 kolom beserta $1 sampai $13
     const query = {
-      text: 'INSERT INTO jobs VALUES($1, $2, $3, $4, $5) RETURNING id',
-      values: [id, title, description, companyId, categoryId],
+      text: `INSERT INTO jobs (
+               id, company_id, category_id, title, description, 
+               job_type, experience_level, location_type, 
+               location_city, salary_min, salary_max, 
+               is_salary_visible, status
+             ) VALUES (
+               $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+             ) RETURNING id`,
+      values: [
+        id, company_id, category_id, title, description, 
+        job_type, experience_level, location_type, 
+        location_city, salary_min, salary_max, 
+        is_salary_visible, status
+      ],
     };
 
-    try {
-      const result = await pool.query(query);
-      return result.rows[0].id;
-    } catch (error) {
-      // Menangkap error Foreign Key Violation dari PostgreSQL (kode 23503)
-      if (error.code === '23503') {
-        throw new InvariantError('Gagal menambahkan lowongan. Company ID atau Category ID tidak valid.');
-      }
-      throw error;
+    const result = await this._pool.query(query);
+
+    if (!result.rows[0].id) {
+      throw new InvariantError('Job gagal ditambahkan');
     }
+
+    return result.rows[0].id;
   }
 
   async getJobs() {
