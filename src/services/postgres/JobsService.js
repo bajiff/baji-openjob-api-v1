@@ -26,10 +26,18 @@ export default class JobsService {
   }
 
   async addJob({ 
-    company_id, category_id, title, description, 
-    job_type, experience_level, location_type, 
-    location_city, salary_min, salary_max, 
-    is_salary_visible, status 
+    company_id,
+    category_id,
+    title,
+    description, 
+    job_type,
+    experience_level,
+    status,
+    location_type, 
+    location_city = null,
+    salary_min = null,
+    salary_max = null, 
+    is_salary_visible = null
   }) {
     const id = `job-${nanoid(16)}`;
 

@@ -10,7 +10,6 @@ export const up = (pgm) => {
     },
     experience_level: {
       type: 'VARCHAR(50)',
-      notNull: true,
     },
     location_type: {
       type: 'VARCHAR(50)',
@@ -18,19 +17,15 @@ export const up = (pgm) => {
     },
     location_city: {
       type: 'VARCHAR(100)',
-      notNull: true,
     },
     salary_min: {
       type: 'INT',
-      notNull: true,
     },
     salary_max: {
       type: 'INT',
-      notNull: true,
     },
     is_salary_visible: {
       type: 'BOOLEAN',
-      notNull: true,
       default: false,
     },
     status: {
