@@ -176,4 +176,21 @@ export default class JobsService {
       throw new NotFoundError('Lowongan gagal dihapus. Id tidak ditemukan');
     }
   }
+  
+
+  async addBookmark(user_id, job_id) {
+    const id = `bookmark-${nanoid(16)}`; 
+    const query = {
+      text: 'INSERT INTO bookmarks VALUES($1, $2, $3) RETURNING id',
+      values: [id, user_id, job_id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows[0].id) {
+      throw new Error('Gagal menambahkan bookmark');
+    }
+
+    return result.rows[0].id;
+  }
 }

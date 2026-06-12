@@ -15,7 +15,7 @@ export default class ApplicationsService {
     };
 
     try {
-      const result = await pool.query(query);
+      const result = await this._pool.query(query);
       return result.rows[0].id;
     } catch (error) {
       if (error.code === '23503') {
@@ -29,7 +29,7 @@ export default class ApplicationsService {
     const query = {
       text: 'SELECT * FROM applications',
     };
-    const result = await pool.query(query);
+    const result = await this._pool.query(query);
     return result.rows;
   }
 
@@ -38,7 +38,7 @@ export default class ApplicationsService {
       text: 'SELECT * FROM applications WHERE id = $1',
       values: [applicationId],
     };
-    const result = await pool.query(query);
+    const result = await this._pool.query(query);
     return result.rows[0];
   }
   async getApplicationsByUserId(user_id) {
@@ -46,7 +46,7 @@ export default class ApplicationsService {
       text: 'SELECT * FROM applications WHERE user_id = $1',
       values: [user_id],
     };
-    const result = await pool.query(query);
+    const result = await this._pool.query(query);
     return result.rows;
   }
 
@@ -85,6 +85,15 @@ export default class ApplicationsService {
     if (!result.rowCount) {
       throw new Error('Gagal menghapus lamaran. Id tidak ditemukan'); 
     }
+  }
+  
+  async deleteApplicationsByJobId(jobId) {
+    const query = {
+      text: 'DELETE FROM applications WHERE job_id = $1 RETURNING id',
+      values: [jobId],
+    };
+    const result = await this._pool.query(query);
+    return result.rows;
   }
 
 }

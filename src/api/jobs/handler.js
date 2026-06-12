@@ -10,6 +10,11 @@ export default class JobsHandler {
     this.deleteJobByIdHandler = this.deleteJobByIdHandler.bind(this);
     this.getJobsByCompanyIdHandler = this.getJobsByCompanyIdHandler.bind(this);
     this.getJobsByCategoryIdHandler = this.getJobsByCategoryIdHandler.bind(this);
+    this.postBookmarkHandler = this.postBookmarkHandler.bind(this);
+    this.getBookmarkedJobsHandler = this.getBookmarkedJobsHandler.bind(this);
+    this.postBookmarkHandler = this.postBookmarkHandler.bind(this);
+    this.getBookmarksHandler = this.getBookmarksHandler.bind(this);
+    this.deleteBookmarkHandler = this.deleteBookmarkHandler.bind(this);
 
   }
 
@@ -43,8 +48,7 @@ export default class JobsHandler {
     }
   }
 
-  async getJobsHandler(req, res, next) {
-    try {
+  async getJobsHandler(req, res, next) { try {
       const { title, 'company-name': companyName } = req.query;
       const jobs = await this._service.getJobs(title, companyName);
       return res.status(200).json({
@@ -123,6 +127,7 @@ export default class JobsHandler {
     }
   }
 
+
   async deleteJobByIdHandler(req, res, next) {
     try {
       const { id } = req.params;
@@ -131,6 +136,75 @@ export default class JobsHandler {
       return res.status(200).json({
         status: 'success',
         message: 'Lowongan pekerjaan berhasil dihapus',
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  
+  async getBookmarkedJobsHandler(req, res, next) {
+    try {
+      const { userId } = req.user;
+      const jobs = await this._service.getBookmarkedJobs(userId);
+
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          jobs,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  
+  
+
+  async postBookmarkHandler(req, res, next) {
+    try {
+      const { id: job_id } = req.params;
+      const { id: user_id } = req.user; 
+
+      const bookmarkId = await this._service.addBookmark(user_id, job_id);
+
+      return res.status(201).json({
+        status: 'success',
+        message: 'Bookmark berhasil ditambahkan',
+        data: {
+          bookmarkId,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getBookmarksHandler(req, res, next) {
+    try {
+      const { id: user_id } = req.user; 
+
+      const bookmarks = await this._service.getBookmarks(user_id);
+
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          bookmarks,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  async deleteBookmarkHandler(req, res, next) {
+    try {
+      const { id: job_id } = req.params;
+      const { id: user_id } = req.user;
+
+      await this._service.deleteBookmark(user_id, job_id);
+
+      return res.status(200).json({
+        status: 'success',
+        message: 'Bookmark berhasil dihapus',
       });
     } catch (error) {
       next(error);
