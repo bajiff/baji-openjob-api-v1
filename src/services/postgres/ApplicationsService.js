@@ -36,4 +36,12 @@ export default class ApplicationsService {
     const result = await pool.query(query);
     return result.rows[0];
   }
+  async getApplicationsByUserId(user_id) {
+    const query = {
+      text: 'SELECT * FROM applications WHERE user_id = $1',
+      values: [user_id],
+    };
+    const result = await pool.query(query);
+    return result.rows;
+  }
 }

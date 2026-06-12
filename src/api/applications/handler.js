@@ -6,6 +6,7 @@ export default class ApplicationsHandler {
     this.postApplicationHandler = this.postApplicationHandler.bind(this);
     this.getApplicationsHandler = this.getApplicationsHandler.bind(this);
     this.getApplicationByIdHandler = this.getApplicationByIdHandler.bind(this);
+    this.getApplicationsByUserIdHandler = this.getApplicationsByUserIdHandler.bind(this);
   }
 
   async postApplicationHandler(req, res, next) {
@@ -45,6 +46,22 @@ export default class ApplicationsHandler {
       const applicationId = req.params.id;
       const application = await this._service.getApplicationById(applicationId);
       return res.status(200).json({ status: 'success', data: application });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getApplicationsByUserIdHandler(req, res, next) {
+    try {
+      const { user_id } = req.params;
+      const applications = await this._service.getApplicationsByUserId(user_id);
+      
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          applications,
+        },
+      });
     } catch (error) {
       next(error);
     }
