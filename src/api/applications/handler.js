@@ -4,6 +4,8 @@ export default class ApplicationsHandler {
     this._validator = validator;
 
     this.postApplicationHandler = this.postApplicationHandler.bind(this);
+    this.getApplicationsHandler = this.getApplicationsHandler.bind(this);
+    this.getApplicationByIdHandler = this.getApplicationByIdHandler.bind(this);
   }
 
   async postApplicationHandler(req, res, next) {
@@ -11,19 +13,38 @@ export default class ApplicationsHandler {
       const payload = req.body || {};
       this._validator.validateApplicationPayload(payload);
 
-      const { jobId } = payload;
+      const { job_id } = payload;
       
-      const { id: userId } = req.user;
+      const { id: user_id } = req.user;
 
-      const applicationId = await this._service.addApplication(userId, jobId);
+      const applicationId = await this._service.addApplication(user_id, job_id);
 
       return res.status(201).json({
         status: 'success',
         message: 'Berhasil melamar pekerjaan',
         data: {
-          applicationId,
+          id: applicationId,
         },
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getApplicationsHandler(req, res, next) {
+    try {
+      const applications = await this._service.getApplications();
+      return res.status(200).json({ status: 'success', data: { applications } });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getApplicationByIdHandler(req, res, next) {
+    try {
+      const applicationId = req.params.id;
+      const application = await this._service.getApplicationById(applicationId);
+      return res.status(200).json({ status: 'success', data: application });
     } catch (error) {
       next(error);
     }

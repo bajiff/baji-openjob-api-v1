@@ -56,7 +56,6 @@ const applicationsService = new ApplicationsService();
 // Registrasi API Modul
 app.use('/users', createUsersApi(usersService, UsersValidator));
 
-
 app.use(
   '/authentications',
   createAuthenticationsApi(
@@ -84,7 +83,6 @@ app.use((req,res) => {
   })
 })
 
-// Middleware Error Handler selalu di urutan paling bawah
 app.use(errorHandler);
 
 app.listen(port, host, () => {
