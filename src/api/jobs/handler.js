@@ -60,14 +60,14 @@ export default class JobsHandler {
 
   async getJobByIdHandler(req, res, next) {
     try {
+      // console.log('1. Parameter dari URL:', req.params);
       const { id } = req.params;
+      // console.log('2. ID yang dilempar ke Service:', id);
       const job = await this._service.getJobById(id);
 
       return res.json({
         status: 'success',
-        data: {
-          job,
-        },
+        data: job,
       });
     } catch (error) {
       next(error);
@@ -110,7 +110,7 @@ export default class JobsHandler {
   async putJobByIdHandler(req, res, next) {
     try {
       const payload = req.body || {};
-      this._validator.validateJobPayload(payload);
+      this._validator.validateUpdateJobPayload(req.body);
 
       const { id } = req.params;
       const { title, description, companyId, categoryId } = payload;
