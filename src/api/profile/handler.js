@@ -6,7 +6,6 @@ export default class ProfileHandler {
 
   async getProfileHandler(req, res, next) {
     try {
-      // req.user didapatkan dari authMiddleware yang sudah kita buat
       const userId = req.user.id; 
       
       const user = await this._usersService.getUserById(userId);

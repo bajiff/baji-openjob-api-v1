@@ -24,7 +24,6 @@ export default class JobsHandler {
         is_salary_visible, status 
       } = req.body;
 
-      // Lalu oper variabel tersebut ke service
       const jobId = await this._service.addJob({
         company_id, category_id, title, description, 
         job_type, experience_level, location_type, 
@@ -60,9 +59,7 @@ export default class JobsHandler {
 
   async getJobByIdHandler(req, res, next) {
     try {
-      // console.log('1. Parameter dari URL:', req.params);
       const { id } = req.params;
-      // console.log('2. ID yang dilempar ke Service:', id);
       const job = await this._service.getJobById(id);
 
       return res.json({
@@ -76,7 +73,6 @@ export default class JobsHandler {
 
   async getJobsByCompanyIdHandler(req, res, next) {
     try {
-      // Tangkap parameter sesuai nama di routes.js
       const { companyId } = req.params; 
       
       const jobs = await this._service.getJobsByCompanyId(companyId);
@@ -84,7 +80,7 @@ export default class JobsHandler {
       return res.status(200).json({
         status: 'success',
         data: {
-          jobs, // Kembalikan dalam bentuk array di dalam properti 'jobs'
+          jobs, 
         },
       });
     } catch (error) {

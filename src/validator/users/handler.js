@@ -20,7 +20,6 @@ export default class UsersHandler {
         },
       });
     } catch (error) {
-      // Lempar error ke middleware errorHandler yang kita buat sebelumnya
       next(error); 
     }
   }

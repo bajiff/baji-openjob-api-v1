@@ -60,7 +60,6 @@ export const up = (pgm) => {
     },
   });
 
-  // Membuat index untuk mengoptimalkan query yang menggunakan foreign key
   pgm.createIndex('jobs', 'company_id');
   pgm.createIndex('jobs', 'category_id');
 };

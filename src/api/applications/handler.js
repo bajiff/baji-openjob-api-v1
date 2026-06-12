@@ -11,10 +11,8 @@ export default class ApplicationsHandler {
       const payload = req.body || {};
       this._validator.validateApplicationPayload(payload);
 
-      // Ekstrak jobId dari body request
       const { jobId } = payload;
       
-      // Ekstrak userId secara aman dari token JWT (middleware auth)
       const { id: userId } = req.user;
 
       const applicationId = await this._service.addApplication(userId, jobId);

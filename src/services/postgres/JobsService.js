@@ -7,9 +7,9 @@ const mapDBToModel = (model) => ({
   id: model.id,
   title: model.title,
   description: model.description,
-  company_id: model.company_id, // Ubah ke camelCase
-  categoryId: model.category_id, // Ubah ke camelCase
-  jobType: model.job_type, // Ubah ke camelCase
+  company_id: model.company_id, 
+  categoryId: model.category_id, 
+  jobType: model.job_type, 
   experienceLevel: model.experience_level,
   locationType: model.location_type,
   locationCity: model.location_city,
@@ -33,7 +33,6 @@ export default class JobsService {
   }) {
     const id = `job-${nanoid(16)}`;
 
-    // 2. Pastikan kueri SQL menyebutkan ke-12 kolom beserta $1 sampai $13
     const query = {
       text: `INSERT INTO jobs (
                id, company_id, category_id, title, description, 
@@ -61,7 +60,6 @@ export default class JobsService {
   }
 
   async getJobs() {
-    // Mapping nama kolom snake_case menjadi camelCase menggunakan alias (AS)
     const result = await pool.query(
       'SELECT id, title, description, company_id AS "company_id", category_id AS "categoryId" FROM jobs'
     );
@@ -77,7 +75,6 @@ export default class JobsService {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      // Ini yang memicu status 404 di error handling-mu
       throw new NotFoundError('Lowongan tidak ditemukan'); 
     }
 
@@ -92,7 +89,6 @@ export default class JobsService {
 
     const result = await this._pool.query(query);
 
-    // Langsung kembalikan rows (bisa berisi array data atau array kosong [])
     return result.rows; 
   }
 
@@ -130,7 +126,7 @@ export default class JobsService {
         is_salary_visible, status, id
       ],
     };
-
+   
     try {
       const result = await this._pool.query(query);
       if (!result.rows.length) {
@@ -150,7 +146,7 @@ export default class JobsService {
       values: [id],
     };
 
-    const result = await pool.query(query);
+    const result = await this._pool.query(query);
 
     if (!result.rows.length) {
       throw new NotFoundError('Lowongan gagal dihapus. Id tidak ditemukan');

@@ -3,7 +3,6 @@ import InvariantError from '../exceptions/InvariantError.js';
 import process from 'process';
 
 const TokenManager = {
-  // Masa berlaku access token diatur 3 jam sesuai kriteria Advanced
   generateAccessToken: (payload) => jwt.sign(payload, process.env.ACCESS_TOKEN_KEY, { expiresIn: '3h' }),
   
   generateRefreshToken: (payload) => jwt.sign(payload, process.env.REFRESH_TOKEN_KEY),
