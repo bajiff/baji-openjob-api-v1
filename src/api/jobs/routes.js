@@ -10,7 +10,8 @@ const routes = (handler) => {
   router.get('/category/:categoryId', handler.getJobsByCategoryIdHandler);
   router.get('/bookmarks', authMiddleware, handler.getBookmarkedJobsHandler);
   router.get('/bookmarks', authMiddleware, handler.getBookmarksHandler);
-  router.delete('/bookmarks/:id', authMiddleware, handler.deleteBookmarkHandler);
+  // router.delete('/bookmarks/:id', authMiddleware, handler.deleteBookmarkHandler);
+
 
   router.post('/:id/bookmark', authMiddleware, handler.postBookmarkHandler);
   router.post('/', authMiddleware, handler.postJobHandler);
