@@ -45,8 +45,9 @@ export default class JobsHandler {
 
   async getJobsHandler(req, res, next) {
     try {
-      const jobs = await this._service.getJobs();
-      return res.json({
+      const { title, 'company-name': companyName } = req.query;
+      const jobs = await this._service.getJobs(title, companyName);
+      return res.status(200).json({
         status: 'success',
         data: {
           jobs,
@@ -62,7 +63,7 @@ export default class JobsHandler {
       const { id } = req.params;
       const job = await this._service.getJobById(id);
 
-      return res.json({
+      return res.status(200).json({
         status: 'success',
         data: job,
       });
@@ -113,7 +114,7 @@ export default class JobsHandler {
 
       await this._service.editJobById(id, { title, description, companyId, categoryId });
 
-      return res.json({
+      return res.status(200).json({
         status: 'success',
         message: 'Lowongan pekerjaan berhasil diperbarui',
       });
@@ -127,7 +128,7 @@ export default class JobsHandler {
       const { id } = req.params;
       await this._service.deleteJobById(id);
 
-      return res.json({
+      return res.status(200).json({
         status: 'success',
         message: 'Lowongan pekerjaan berhasil dihapus',
       });

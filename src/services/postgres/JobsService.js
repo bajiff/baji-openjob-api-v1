@@ -59,10 +59,26 @@ export default class JobsService {
     return result.rows[0].id;
   }
 
-  async getJobs() {
-    const result = await pool.query(
-      'SELECT id, title, description, company_id AS "company_id", category_id AS "categoryId" FROM jobs'
-    );
+  async getJobs(title, companyName) {
+    let text = `SELECT jobs.*, companies.name AS company_name 
+                FROM jobs 
+                JOIN companies ON jobs.company_id = companies.id 
+                WHERE 1=1`; 
+    const values = [];
+
+    if (title) {
+      values.push(`%${title}%`);
+      text += ` AND jobs.title ILIKE $${values.length}`;
+    }
+
+    if (companyName) {
+      values.push(`%${companyName}%`);
+      text += ` AND companies.name ILIKE $${values.length}`;
+    }
+
+    const query = { text, values };
+    const result = await this._pool.query(query); 
+
     return result.rows;
   }
 
