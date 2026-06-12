@@ -7,18 +7,23 @@ export default class ApplicationsHandler {
     this.getApplicationsHandler = this.getApplicationsHandler.bind(this);
     this.getApplicationByIdHandler = this.getApplicationByIdHandler.bind(this);
     this.getApplicationsByUserIdHandler = this.getApplicationsByUserIdHandler.bind(this);
+    this.getApplicationsByJobIdHandler = this.getApplicationsByJobIdHandler.bind(this);
+    this.putApplicationByIdHandler = this.putApplicationByIdHandler.bind(this);
+    this.deleteApplicationByIdHandler = this.deleteApplicationByIdHandler.bind(this);
+    this.deleteApplicationByIdHandler = this.deleteApplicationByIdHandler.bind(this);
   }
+
 
   async postApplicationHandler(req, res, next) {
     try {
       const payload = req.body || {};
       this._validator.validateApplicationPayload(payload);
 
-      const { job_id } = payload;
+      const { job_id, status } = payload;
       
       const { id: user_id } = req.user;
 
-      const applicationId = await this._service.addApplication(user_id, job_id);
+      const applicationId = await this._service.addApplication(user_id, job_id, status);
 
       return res.status(201).json({
         status: 'success',
@@ -61,6 +66,51 @@ export default class ApplicationsHandler {
         data: {
           applications,
         },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getApplicationsByJobIdHandler(req, res, next) {
+    try {
+      const { job_id } = req.params;
+      const applications = await this._service.getApplicationsByJobId(job_id);
+      
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          applications
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  
+  async putApplicationByIdHandler(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body; 
+
+      await this._service.updateApplicationStatusById(id,status);
+
+      return res.status(200).json({
+        status: 'success',
+        message: 'Status lamaran berhasil diperbarui',
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteApplicationByIdHandler(req, res, next) {
+    try {
+      const { id } = req.params;
+      await this._service.deleteApplicationById(id);
+      return res.status(200).json({
+        status: 'success',
+        message: 'Lamaran berhasil dihapus',
       });
     } catch (error) {
       next(error);
