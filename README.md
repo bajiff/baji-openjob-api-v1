@@ -50,6 +50,7 @@ API ini menggunakan arsitektur modular dengan pemisahan yang jelas antara *route
 - 🏷️ **Kategori Pekerjaan** — Pengelompokan lowongan berdasarkan kategori.
 - 💼 **Lowongan Kerja (Jobs)** — CRUD lowongan kerja dengan detail lengkap.
 - 📝 **Lamaran Kerja (Applications)** — Pengguna dapat melamar pekerjaan yang tersedia.
+- 🔖 **Bookmark Lowongan** — Pengguna dapat menyimpan (bookmark) lowongan kerja favorit untuk dilihat kembali nanti.
 - ✅ **Validasi Data** — Menggunakan **Joi** untuk validasi payload request.
 - 🛡️ **Error Handling** — Custom error classes (ClientError, NotFoundError, InvariantError, AuthenticationError) dengan middleware error handler terpusat.
 
@@ -67,22 +68,90 @@ http://localhost:3000
 
 ### Endpoint Overview
 
+#### 🏠 Root
+
 | Method   | Endpoint             | Deskripsi                          | Auth |
 |----------|----------------------|------------------------------------|------|
 | `GET`    | `/`                  | Health check API                   | ❌   |
+
+#### 👤 Users
+
+| Method   | Endpoint             | Deskripsi                          | Auth |
+|----------|----------------------|------------------------------------|------|
 | `POST`   | `/users`             | Registrasi pengguna baru           | ❌   |
+| `GET`    | `/users/:id`         | Lihat detail user berdasarkan ID   | ❌   |
+
+#### 🔐 Authentications
+
+| Method   | Endpoint             | Deskripsi                          | Auth |
+|----------|----------------------|------------------------------------|------|
 | `POST`   | `/authentications`   | Login (mendapatkan token)          | ❌   |
 | `PUT`    | `/authentications`   | Refresh access token               | ❌   |
 | `DELETE` | `/authentications`   | Logout (hapus refresh token)       | ❌   |
-| `GET`    | `/profile`           | Lihat profil pengguna              | ✅   |
+
+#### 📋 Profile
+
+| Method   | Endpoint                | Deskripsi                          | Auth |
+|----------|-------------------------|------------------------------------|------|
+| `GET`    | `/profile`              | Lihat profil pengguna              | ✅   |
+| `GET`    | `/profile/applications` | Lihat lamaran milik pengguna       | ✅   |
+| `GET`    | `/profile/bookmarks`    | Lihat bookmark milik pengguna      | ✅   |
+
+#### 🏢 Companies
+
+| Method   | Endpoint             | Deskripsi                          | Auth |
+|----------|----------------------|------------------------------------|------|
 | `GET`    | `/companies`         | Lihat daftar perusahaan            | ❌   |
+| `GET`    | `/companies/:id`     | Lihat detail perusahaan            | ❌   |
 | `POST`   | `/companies`         | Tambah perusahaan                  | ✅   |
+| `PUT`    | `/companies/:id`     | Update data perusahaan             | ✅   |
+| `DELETE` | `/companies/:id`     | Hapus perusahaan                   | ✅   |
+
+#### 🏷️ Categories
+
+| Method   | Endpoint             | Deskripsi                          | Auth |
+|----------|----------------------|------------------------------------|------|
 | `GET`    | `/categories`        | Lihat daftar kategori              | ❌   |
+| `GET`    | `/categories/:id`    | Lihat detail kategori              | ❌   |
 | `POST`   | `/categories`        | Tambah kategori                    | ✅   |
-| `GET`    | `/jobs`              | Lihat daftar lowongan              | ❌   |
-| `POST`   | `/jobs`              | Tambah lowongan kerja              | ✅   |
-| `GET`    | `/applications`      | Lihat daftar lamaran               | ✅   |
-| `POST`   | `/applications`      | Ajukan lamaran kerja               | ✅   |
+| `PUT`    | `/categories/:id`    | Update kategori                    | ✅   |
+| `DELETE` | `/categories/:id`    | Hapus kategori                     | ✅   |
+
+#### 💼 Jobs
+
+| Method   | Endpoint                          | Deskripsi                          | Auth |
+|----------|-----------------------------------|------------------------------------|------|
+| `GET`    | `/jobs`                           | Lihat daftar lowongan              | ❌   |
+| `GET`    | `/jobs/:id`                       | Lihat detail lowongan              | ❌   |
+| `GET`    | `/jobs/company/:companyId`        | Lihat lowongan per perusahaan      | ❌   |
+| `GET`    | `/jobs/category/:categoryId`      | Lihat lowongan per kategori        | ❌   |
+| `GET`    | `/jobs/bookmarks`                 | Lihat semua lowongan yang di-bookmark | ✅   |
+| `POST`   | `/jobs`                           | Tambah lowongan kerja              | ✅   |
+| `POST`   | `/jobs/:id/bookmark`              | Bookmark sebuah lowongan           | ✅   |
+| `GET`    | `/jobs/:id/bookmark/:bookmarkId`  | Lihat detail bookmark              | ✅   |
+| `PUT`    | `/jobs/:id`                       | Update lowongan kerja              | ✅   |
+| `DELETE` | `/jobs/:id`                       | Hapus lowongan kerja               | ✅   |
+| `DELETE` | `/jobs/:id/bookmark`              | Hapus bookmark lowongan            | ✅   |
+
+#### 📝 Applications
+
+| Method   | Endpoint                        | Deskripsi                          | Auth |
+|----------|---------------------------------|------------------------------------|------|
+| `GET`    | `/applications`                 | Lihat daftar semua lamaran         | ✅   |
+| `GET`    | `/applications/:id`             | Lihat detail lamaran               | ✅   |
+| `GET`    | `/applications/user/:user_id`   | Lihat lamaran per pengguna         | ✅   |
+| `GET`    | `/applications/job/:job_id`     | Lihat lamaran per lowongan         | ✅   |
+| `POST`   | `/applications`                 | Ajukan lamaran kerja               | ✅   |
+| `PUT`    | `/applications/:id`             | Update status lamaran              | ✅   |
+| `DELETE` | `/applications/:id`             | Hapus lamaran                      | ✅   |
+
+#### 🔖 Bookmarks
+
+| Method   | Endpoint             | Deskripsi                          | Auth |
+|----------|----------------------|------------------------------------|------|
+| `GET`    | `/bookmarks`         | Lihat semua bookmark user          | ✅   |
+| `GET`    | `/bookmarks/:id`     | Lihat detail bookmark              | ✅   |
+| `DELETE` | `/bookmarks/:id`     | Hapus bookmark                     | ✅   |
 
 > **✅ Auth** = Membutuhkan header `Authorization: Bearer <access_token>`
 
@@ -229,7 +298,8 @@ Pastikan sistem Anda sudah memiliki tools berikut:
 │   ├── ..._create-table-companies.js
 │   ├── ..._create-table-categories.js
 │   ├── ..._create-table-jobs.js
-│   └── ..._create-table-applications.js
+│   ├── ..._create-table-applications.js
+│   └── ..._create-table-bookmarks.js
 ├── src/
 │   ├── api/                                 # Route & Handler (per module)
 │   │   ├── applications/
@@ -237,6 +307,10 @@ Pastikan sistem Anda sudah memiliki tools berikut:
 │   │   │   ├── index.js                     # Router factory
 │   │   │   └── routes.js                    # Route definitions
 │   │   ├── authentications/
+│   │   │   ├── handler.js
+│   │   │   ├── index.js
+│   │   │   └── routes.js
+│   │   ├── bookmarks/
 │   │   │   ├── handler.js
 │   │   │   ├── index.js
 │   │   │   └── routes.js
@@ -273,6 +347,7 @@ Pastikan sistem Anda sudah memiliki tools berikut:
 │   │   └── postgres/
 │   │       ├── ApplicationsService.js
 │   │       ├── AuthenticationsService.js
+│   │       ├── BookmarksService.js
 │   │       ├── CategoriesService.js
 │   │       ├── CompaniesService.js
 │   │       ├── JobsService.js
@@ -285,6 +360,9 @@ Pastikan sistem Anda sudah memiliki tools berikut:
 │   │   │   ├── index.js
 │   │   │   └── schema.js
 │   │   ├── authentications/
+│   │   │   ├── index.js
+│   │   │   └── schema.js
+│   │   ├── bookmarks/
 │   │   │   ├── index.js
 │   │   │   └── schema.js
 │   │   ├── categories/
@@ -315,12 +393,13 @@ Pastikan sistem Anda sudah memiliki tools berikut:
 |----|------------------------|-------------------------------------------------------------|
 | 1  | `src/server.js`        | Entry point — inisialisasi Express, registrasi semua modul  |
 | 2  | `src/api/`             | Kumpulan modul API (handler, routes, index per resource)    |
-| 3  | `src/services/`        | Business logic & interaksi database PostgreSQL              |
-| 4  | `src/validator/`       | Validasi payload request menggunakan Joi schema             |
-| 5  | `src/exceptions/`      | Custom error classes untuk error handling yang konsisten     |
-| 6  | `src/middlewares/`     | Middleware autentikasi JWT & error handler                  |
-| 7  | `src/tokenize/`        | Manajemen pembuatan & verifikasi JWT token                  |
-| 8  | `migrations/`          | File migrasi database (node-pg-migrate)                     |
+| 3  | `src/api/bookmarks/`   | Modul bookmark — simpan lowongan kerja favorit              |
+| 4  | `src/services/`        | Business logic & interaksi database PostgreSQL              |
+| 5  | `src/validator/`       | Validasi payload request menggunakan Joi schema             |
+| 6  | `src/exceptions/`      | Custom error classes untuk error handling yang konsisten     |
+| 7  | `src/middlewares/`     | Middleware autentikasi JWT & error handler                  |
+| 8  | `src/tokenize/`        | Manajemen pembuatan & verifikasi JWT token                  |
+| 9  | `migrations/`          | File migrasi database (node-pg-migrate)                     |
 
 ---
 
