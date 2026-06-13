@@ -10,6 +10,8 @@ const routes = (handler) => {
   
   router.get('/', handler.getJobsHandler);
   router.get('/bookmarks', authMiddleware, handler.getBookmarkedJobsHandler);
+  router.get('/company/:companyId', handler.getJobsByCompanyIdHandler);
+  router.get('/category/:categoryId', handler.getJobsByCategoryIdHandler);
   router.get('/:id', handler.getJobByIdHandler);
   
   router.post('/', authMiddleware, handler.postJobHandler);
