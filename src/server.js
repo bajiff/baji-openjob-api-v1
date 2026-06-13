@@ -39,6 +39,11 @@ import ApplicationsService from './services/postgres/ApplicationsService.js';
 import ApplicationsValidator from './validator/applications/index.js';
 import createApplicationsApi from './api/applications/index.js';
 
+// ? 9. Import API Bookmarks
+import BookmarksService from './services/postgres/BookmarksService.js';
+import BookmarksValidator from './validator/bookmarks/index.js';
+import createBookmarksApi from './api/bookmarks/index.js';
+
 const app = express();
 const port = process.env.PORT || 3000;
 const host = process.env.HOST || 'localhost';
@@ -52,6 +57,8 @@ const companiesService = new CompaniesService();
 const categoriesService = new CategoriesService();
 const jobsService = new JobsService();
 const applicationsService = new ApplicationsService();
+const bookmarksService = new BookmarksService();
+
 
 // Registrasi API Modul
 app.use('/users', createUsersApi(usersService, UsersValidator));
@@ -71,6 +78,7 @@ app.use('/companies', createCompaniesApi(companiesService, CompaniesValidator));
 app.use('/categories', createCategoriesApi(categoriesService, CategoriesValidator));
 app.use('/jobs', createJobsApi(jobsService, JobsValidator));
 app.use('/applications', createApplicationsApi(applicationsService, ApplicationsValidator));
+app.use('/bookmarks', createBookmarksApi(bookmarksService, BookmarksValidator));
 
 app.get('/', (req, res) => {
     res.send({ message: 'OpenJob RESTful API V1 is running with ES Modules!' });
