@@ -1,66 +1,177 @@
-Get Jobs by Company Id with Invalid Id
-http://localhost:{{port}}/jobs/company/xxx
-Script Test: pm.test('it should response 200 status code', () => {
+Login with User John
+http://localhost:{{port}}/authentications
+Payload: {
+    "email": "john@example.com",
+    "password": "password123"
+}
+
+Script test: pm.test('it should response 200 status code', () => {
     pm.expect(pm.response).to.have.status(200);
 });
 
-pm.test('response body should have correct property and value', () => {
+pm.test('response Content-Type header should have application/json value', () => {
+    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');
+}); 
+
+pm.test('response body should an object', () => {
     const responseJson = pm.response.json();
-    pm.expect(responseJson.status).to.equal('success');
-    pm.expect(responseJson.data.jobs).to.be.an('array');
-    pm.expect(responseJson.data.jobs).to.have.lengthOf(0);
+    pm.expect(responseJson).to.be.an('object');
 });
 
-
-Get Jobs by Company Id with Valid Id
-http://localhost:{{port}}/jobs/company/{{jobCompanyId}}
-Script Test:pm.test('it should response 200 status code', () => {
-    pm.expect(pm.response).to.have.status(200);
-});
-
-pm.test('response body should have correct property and value', () => {
+pm.test('response body have correct property and value', () => {
     const responseJson = pm.response.json();
-    const companyId = pm.environment.get('jobCompanyId');
+
     pm.expect(responseJson.status).to.equal('success');
-    pm.expect(responseJson.data.jobs).to.be.an('array');
+    pm.expect(responseJson.data).to.be.an('object');
+    pm.expect(responseJson.data.accessToken).to.be.a('string');
+    pm.expect(responseJson.data.refreshToken).to.be.a('string');
     
-    if (responseJson.data.jobs.length > 0) {
-        responseJson.data.jobs.forEach(job => {
-            pm.expect(job.company_id).to.equal(companyId);
-        });
-    }
+    pm.environment.set('accessTokenJohn', responseJson.data.accessToken);
+    pm.environment.set('refreshTokenJohn', responseJson.data.refreshToken);
 });
 
 
-Get Jobs by Category Id with Invalid Id
-http://localhost:{{port}}/jobs/category/xxx
-Script Test: pm.test('it should response 200 status code', () => {
+
+
+Login with User Jane
+http://localhost:{{port}}/authentications
+Payload:{
+    "email": "jane@example.com",
+    "password": "password123"
+}
+
+Script test: pm.test('it should response 200 status code', () => {
     pm.expect(pm.response).to.have.status(200);
 });
 
-pm.test('response body should have correct property and value', () => {
+pm.test('response Content-Type header should have application/json value', () => {
+    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');
+}); 
+
+pm.test('response body should an object', () => {
     const responseJson = pm.response.json();
-    pm.expect(responseJson.status).to.equal('success');
-    pm.expect(responseJson.data.jobs).to.be.an('array');
-    pm.expect(responseJson.data.jobs).to.have.lengthOf(0);
+    pm.expect(responseJson).to.be.an('object');
 });
 
-Get Jobs by Category Id with Valid Id
-http://localhost:{{port}}/jobs/category/{{jobCategoryId}}
-Script Test: pm.test('it should response 200 status code', () => {
-    pm.expect(pm.response).to.have.status(200);
-});
-
-pm.test('response body should have correct property and value', () => {
+pm.test('response body have correct property and value', () => {
     const responseJson = pm.response.json();
-    const categoryId = pm.environment.get('jobCategoryId');
+
     pm.expect(responseJson.status).to.equal('success');
-    pm.expect(responseJson.data.jobs).to.be.an('array');
+    pm.expect(responseJson.data).to.be.an('object');
+    pm.expect(responseJson.data.accessToken).to.be.a('string');
+    pm.expect(responseJson.data.refreshToken).to.be.a('string');
     
-    if (responseJson.data.jobs.length > 0) {
-        responseJson.data.jobs.forEach(job => {
-            pm.expect(job.category_id).to.equal(categoryId);
-        });
-    }
+    pm.environment.set('accessTokenJane', responseJson.data.accessToken);
+    pm.environment.set('refreshTokenJane', responseJson.data.refreshToken);
 });
 
+
+Get Profile with Valid Token
+http://localhost:{{port}}/profile
+Script test:pm.test('it should response 200 status code', () => {
+    pm.expect(pm.response).to.have.status(200);
+});
+
+pm.test('response Content-Type header should have application/json value', () => {
+    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');
+});
+
+pm.test('response body should be an object', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson).to.be.an('object');
+});
+
+pm.test('response body should have correct property and value', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson.status).to.equal('success');
+    pm.expect(responseJson.data).to.be.an('object');
+    pm.expect(responseJson.data.id).to.be.a('string');
+    pm.expect(responseJson.data.name).to.equal('John Doe');
+    pm.expect(responseJson.data.email).to.equal('john@example.com');
+    pm.expect(responseJson.data.role).to.equal('user');
+});
+
+Get Profile Applications without Authentication
+http://localhost:{{port}}/profile/applications
+Script test: pm.test('it should response 401 status code', () => {
+    pm.expect(pm.response).to.have.status(401);
+});
+
+pm.test('response Content-Type header should have application/json value', () => {
+    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');
+});
+
+pm.test('response body should be an object', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson).to.be.an('object');
+});
+
+pm.test('response body should have correct property and value', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson.status).to.equal('failed');
+    pm.expect(responseJson.message).to.be.a('string');
+});
+
+
+Get Profile Applications with Valid Token
+http://localhost:{{port}}/profile/applications
+Script test:pm.test('it should response 200 status code', () => {
+    pm.expect(pm.response).to.have.status(200);
+});
+
+pm.test('response Content-Type header should have application/json value', () => {
+    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');
+});
+
+pm.test('response body should be an object', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson).to.be.an('object');
+});
+
+pm.test('response body should have correct property and value', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson.status).to.equal('success');
+    pm.expect(responseJson.data.applications).to.be.an('array');
+});
+
+Get Profile Bookmarks without Authentication
+http://localhost:{{port}}/profile/bookmarks
+Script test: pm.test('it should response 401 status code', () => {
+    pm.expect(pm.response).to.have.status(401);
+});
+
+pm.test('response Content-Type header should have application/json value', () => {
+    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');
+});
+
+pm.test('response body should be an object', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson).to.be.an('object');
+});
+
+pm.test('response body should have correct property and value', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson.status).to.equal('failed');
+    pm.expect(responseJson.message).to.be.a('string');
+});
+
+Get Profile Bookmarks with Valid Token
+http://localhost:{{port}}/profile/bookmarks
+Script test:pm.test('it should response 200 status code', () => {
+    pm.expect(pm.response).to.have.status(200);
+});
+
+pm.test('response Content-Type header should have application/json value', () => {
+    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');
+});
+
+pm.test('response body should be an object', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson).to.be.an('object');
+});
+
+pm.test('response body should have correct property and value', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson.status).to.equal('success');
+    pm.expect(responseJson.data.bookmarks).to.be.an('array');
+});
