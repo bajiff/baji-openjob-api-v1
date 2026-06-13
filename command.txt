@@ -1,0 +1,56 @@
+Delete Bookmark without Authentication
+DELETE: http://localhost:{{port}}/jobs/{{jobId}}/bookmark
+Script Test: pm.test('it should response 401 status code', () => {
+    pm.expect(pm.response).to.have.status(401);
+});
+
+pm.test('response Content-Type header should have application/json value', () => {
+    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');
+});
+
+pm.test('response body should be an object', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson).to.be.an('object');
+});
+
+pm.test('response body should have correct property and value', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson.status).to.equal('failed');
+    pm.expect(responseJson.message).to.be.a('string');
+});
+
+
+Add Bookmark
+POST: http://localhost:{{port}}/jobs/{{jobId}}/bookmark
+Script test: pm.test('it should response 201 status code', () => {
+    pm.expect(pm.response).to.have.status(201);
+});
+
+pm.test('response body should have correct property and value', () => {
+    const responseJson = pm.response.json();
+    pm.expect(responseJson.status).to.equal('success');
+    pm.expect(responseJson.data.id).to.be.a('string');
+    pm.environment.set('bookmarkId', responseJson.data.id);
+});
+
+Get Bookmark by Id with Valid Id
+http://localhost:{{port}}/jobs/{{jobId}}/bookmark/{{bookmarkId}}
+Script test: pm.test('it should response 200 status code', () => {
+    pm.expect(pm.response).to.have.status(200);
+});
+
+pm.test('response body should have correct property and value', () => {
+    const responseJson = pm.response.json();
+    const bookmarkId = pm.environment.get('bookmarkId');
+    pm.expect(responseJson.status).to.equal('success');
+    pm.expect(responseJson.data.id).to.equal(bookmarkId);
+});
+
+
+Delete Bookmark
+http://localhost:{{port}}/jobs/{{jobId}}/bookmark
+pm.test('it should response 200 status code', () => {
+    pm.expect(pm.response).to.have.status(200);
+});
+
+

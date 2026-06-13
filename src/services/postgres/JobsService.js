@@ -193,4 +193,56 @@ export default class JobsService {
 
     return result.rows[0].id;
   }
+
+  async getBookmark(bookmark_id) {
+    const query = {
+      text: 'SELECT * FROM bookmarks WHERE id = $1',
+      values: [bookmark_id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Bookmark tidak ditemukan');
+    }
+
+    return result.rows[0];
+  }
+
+  async getBookmarks(user_id) {
+    const query = {
+      text: 'SELECT * FROM bookmarks WHERE user_id = $1',
+      values: [user_id],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
+  }
+
+  async deleteBookmark(user_id, job_id) {
+    const query = {
+      text: 'DELETE FROM bookmarks WHERE user_id = $1 AND job_id = $2 RETURNING id',
+      values: [user_id, job_id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Bookmark gagal dihapus. Id tidak ditemukan');
+    }
+  }
+
+  async getBookmarkedJobs(user_id) {
+    const query = {
+      text: `SELECT jobs.* FROM jobs 
+              JOIN bookmarks ON jobs.id = bookmarks.job_id 
+              WHERE bookmarks.user_id = $1`,
+      values: [user_id],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
+  }
 }

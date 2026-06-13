@@ -12,7 +12,7 @@ export default class JobsHandler {
     this.getJobsByCategoryIdHandler = this.getJobsByCategoryIdHandler.bind(this);
     this.postBookmarkHandler = this.postBookmarkHandler.bind(this);
     this.getBookmarkedJobsHandler = this.getBookmarkedJobsHandler.bind(this);
-    this.postBookmarkHandler = this.postBookmarkHandler.bind(this);
+    this.getBookmarkByIdHandler = this.getBookmarkByIdHandler.bind(this);
     this.getBookmarksHandler = this.getBookmarksHandler.bind(this);
     this.deleteBookmarkHandler = this.deleteBookmarkHandler.bind(this);
 
@@ -171,8 +171,22 @@ export default class JobsHandler {
         status: 'success',
         message: 'Bookmark berhasil ditambahkan',
         data: {
-          bookmarkId,
+          id: bookmarkId,
         },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getBookmarkByIdHandler(req, res, next) {
+    try {
+      const { bookmarkId } = req.params;
+      const bookmark = await this._service.getBookmark(bookmarkId);
+
+      return res.status(200).json({
+        status: 'success',
+        data: bookmark,
       });
     } catch (error) {
       next(error);
