@@ -23,7 +23,7 @@ export default class AuthenticationsHandler {
 
       await this._authenticationsService.addRefreshToken(refreshToken);
 
-      return res.status(201).json({
+      return res.status(200).json({
         status: 'success',
         message: 'Authentication berhasil ditambahkan',
         data: {

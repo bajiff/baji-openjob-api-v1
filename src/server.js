@@ -73,7 +73,7 @@ app.use(
   )
 );
 
-app.use('/profile', createProfileApi(usersService));
+app.use('/profile', createProfileApi(usersService, applicationsService, bookmarksService));
 app.use('/companies', createCompaniesApi(companiesService, CompaniesValidator));
 app.use('/categories', createCategoriesApi(categoriesService, CategoriesValidator));
 app.use('/jobs', createJobsApi(jobsService, JobsValidator));
