@@ -16,7 +16,10 @@ export default class ProfileHandler {
 
       return res.json({
         status: 'success',
-        data: user,
+        data: {
+          ...user,
+          role: 'user',
+        },
       });
     } catch (error) {
       next(error);
